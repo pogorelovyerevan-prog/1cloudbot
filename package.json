@@ -1,0 +1,23 @@
+{
+  "name": "1cloudbot",
+  "version": "1.0.0",
+  "description": "Telegram bot для управления сервером 1cloud",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "1cloud"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "date-holidays": "^3.26.5",
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}

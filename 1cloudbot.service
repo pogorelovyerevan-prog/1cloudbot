@@ -1,0 +1,20 @@
+[Unit]
+Description=1Cloud Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/1cloudbot
+ExecStart=/usr/bin/node /root/1cloudbot/bot.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=1cloudbot
+
+# Environment
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+{
+  "workDays": [1, 2, 3, 4, 5],
+  "workDaysNames": ["Пн", "Вт", "Ср", "Чт", "Пт"],
+  "startHour": 6,
+  "endHour": 18,
+  "serverStartMinutesBefore": 5,
+  "lastUpdated": "2025-12-02T09:45:00.000Z",
+  "updatedBy": "manual"
+}
