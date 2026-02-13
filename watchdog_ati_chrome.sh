@@ -11,7 +11,9 @@ WIN_USER="${WIN_USER:-CloudAdmin}"
 TASK_NAME="${ATI_TASK_NAME:-ATI Parser AtLogon}"
 MAX_MB="${CHROME_MAX_MB:-3500}"
 
-ssh_base=(ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -p "$WIN_PORT" "${WIN_USER}@${WIN_HOST}")
+WIN_SSH_KEY="${WIN_SSH_KEY:-/root/.ssh/id_ed25519_windows_server}"
+
+ssh_base=(ssh -i "$WIN_SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -p "$WIN_PORT" "${WIN_USER}@${WIN_HOST}")
 
 ps_cmd='$procs=Get-CimInstance Win32_Process -Filter "Name=\"chrome.exe\"" | Where-Object { $_.CommandLine -like "*C:\\ChromeParser\\UserData*" };
 $cnt=0; if($procs){ $cnt=@($procs).Count };
