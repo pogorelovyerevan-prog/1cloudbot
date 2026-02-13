@@ -15,11 +15,7 @@ WIN_SSH_KEY="${WIN_SSH_KEY:-/root/.ssh/id_ed25519_windows_server}"
 
 ssh_base=(ssh -i "$WIN_SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -p "$WIN_PORT" "${WIN_USER}@${WIN_HOST}")
 
-ps_cmd='$procs=Get-CimInstance Win32_Process -Filter "Name=\"chrome.exe\"" | Where-Object { $_.CommandLine -like "*C:\\ChromeParser\\UserData*" };
-$cnt=0; if($procs){ $cnt=@($procs).Count };
-$sum=0; if($procs){ $sum=(@($procs) | Measure-Object -Property WorkingSetSize -Sum).Sum };
-$mb=[math]::Round(($sum/1MB),0);
-Write-Output ("COUNT="+$cnt+" MB="+$mb)'
+ps_cmd="$procs=Get-WmiObject Win32_Process | Where-Object { $_.Name -eq 'chrome.exe' -and $_.CommandLine -like '*C:\\ChromeParser\\UserData*' }; $cnt=0; if($procs){ $cnt=@($procs).Count }; $sum=0; if($procs){ $sum=(@($procs) | Measure-Object -Property WorkingSetSize -Sum).Sum }; $mb=[math]::Round(($sum/1MB),0); Write-Output ('COUNT='+$cnt+' MB='+$mb)"
 
 status="$(${ssh_base[@]} "powershell -NoProfile -Command \"$ps_cmd\"" 2>/dev/null || true)"
 
@@ -42,8 +38,7 @@ fi
 
 if [[ "$mb" -ge "$MAX_MB" ]]; then
   echo "[watchdog] chrome memory high → restarting ONLY our chrome instance + task"
-  kill_cmd='$procs=Get-CimInstance Win32_Process -Filter "Name=\"chrome.exe\"" | Where-Object { $_.CommandLine -like "*C:\\ChromeParser\\UserData*" };
-if($procs){ @($procs) | ForEach-Object { Stop-Process -Id $_.ProcessId -Force } }'
+  kill_cmd="$procs=Get-WmiObject Win32_Process | Where-Object { $_.Name -eq 'chrome.exe' -and $_.CommandLine -like '*C:\\ChromeParser\\UserData*' }; if($procs){ @($procs) | ForEach-Object { Stop-Process -Id $_.ProcessId -Force } }"
   ${ssh_base[@]} "powershell -NoProfile -Command \"$kill_cmd\"" >/dev/null 2>&1 || true
   ${ssh_base[@]} "schtasks /run /tn \"$TASK_NAME\"" >/dev/null 2>&1 || true
   exit 0
