@@ -73,6 +73,9 @@ function updateCronJobs(schedule) {
 # Добавляем новые
 (crontab -l 2>/dev/null; echo "${startMinute} ${startHour} * * ${cronDays} cd /root/1cloudbot && /usr/bin/node bot.js --check-start >> /root/1cloudbot/logs/cron.log 2>&1") | crontab -
 (crontab -l 2>/dev/null; echo "${stopMinute} ${stopHour} * * ${cronDays} cd /root/1cloudbot && /usr/bin/node bot.js --check-stop >> /root/1cloudbot/logs/cron.log 2>&1") | crontab -
+
+# Watchdog Chrome (каждые 5 минут в рабочие часы)
+(crontab -l 2>/dev/null; echo "*/5 ${schedule.startHour}-${schedule.endHour} * * ${cronDays} cd /root/1cloudbot && /root/1cloudbot/watchdog_ati_chrome.sh >> /root/1cloudbot/logs/watchdog.log 2>&1") | crontab -
 `;
     
     exec(cronCommands, (error, stdout, stderr) => {
